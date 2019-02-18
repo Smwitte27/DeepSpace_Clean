@@ -31,6 +31,7 @@ public class Constants {
     public static final int LONG_CAN_TIMEOUT = 100; // use for constructors
     public static final double DRIVE_RAMP_RATE = 0;
     public static final int PID_CONTROL = 2;
+    public static final int RPI_PORT = 5804;
 
 
 
