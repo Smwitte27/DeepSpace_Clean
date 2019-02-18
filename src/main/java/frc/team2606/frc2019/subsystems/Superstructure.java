@@ -7,8 +7,8 @@ import frc.team2606.frc2019.statemachines.SuperstructureStateMachine;
 public class Superstructure extends Subsystem {
 
     static Superstructure structureInstance = new Superstructure();
-    private Arm arm = Arm.getInstance();
-    private Intake intake = Intake.getInstance();
+    //private Arm arm = Arm.getInstance();
+    //private Intake intake = Intake.getInstance();
     private SuperstructureStateMachine stateMachine = new SuperstructureStateMachine();
 
     public synchronized static Superstructure getInstance() {

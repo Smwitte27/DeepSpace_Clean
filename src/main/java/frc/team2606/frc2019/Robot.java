@@ -32,19 +32,17 @@ public class Robot extends TimedRobot {
   private Looper disabledLooper = new Looper();
   private Controls controls = new Controls();
 
-  private final SubsystemManager subsystemManager = new SubsystemManager(
-      Arrays.asList(
-      Drive.getInstance()//,
-      //Arm.getInstance(),
-      //Intake.getInstance(),
-      //Superstructure.getInstance()
-    )
-  );
+  private final SubsystemManager subsystemManager = new SubsystemManager(Arrays.asList(Drive.getInstance()// ,
+  // Arm.getInstance(),
+  // Intake.getInstance(),
+  // Superstructure.getInstance()
+  ));
 
   private Drive drive = Drive.getInstance();
   private Arm arm = Arm.getInstance();
-  //private Intake intake = Intake.getInstance();
-  //private Superstructure superstrucure = Superstructure.getInstance();
+
+  // private Intake intake = Intake.getInstance();
+  // private Superstructure superstrucure = Superstructure.getInstance();
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -53,7 +51,6 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     try {
       CrashTracker.logRobotInit();
-
 
       subsystemManager.registerEnabledLoops(enabledLooper);
       subsystemManager.registerDisabledLoops(disabledLooper);
@@ -72,7 +69,7 @@ public class Robot extends TimedRobot {
       outputToSmartDashboard();
     } catch (Throwable t) {
       CrashTracker.logThrowableCrash(t);
-        throw t;
+      throw t;
     }
   }
 
@@ -126,15 +123,15 @@ public class Robot extends TimedRobot {
     double lThrottle = controls.getLeftThrottle();
     double rThrottle = controls.getRightThrottle();
     double armThrottle = controls.getArmThrottle();
-    //double armDown = OI.getArmDown();
-    //boolean runIntake = OI.isRunIntake();
-    //boolean ejectBall = OI.isEjectBall();
+    // double armDown = OI.getArmDown();
+    // boolean runIntake = OI.isRunIntake();
+    // boolean ejectBall = OI.isEjectBall();
     SmartDashboard.putNumber("Left Throttle", lThrottle);
     SmartDashboard.putNumber("Right Throttle", rThrottle);
     SmartDashboard.putNumber("Arm Throttle", armThrottle);
-    //SmartDashboard.putNumber("Arm Down", armDown);
-    //SmartDashboard.putBoolean("Itake Running", runIntake);
-    //SmartDashboard.putBoolean("Itake Ejecting", ejectBall);   
+    // SmartDashboard.putNumber("Arm Down", armDown);
+    // SmartDashboard.putBoolean("Itake Running", runIntake);
+    // SmartDashboard.putBoolean("Itake Ejecting", ejectBall);
 
     try {
 
@@ -148,8 +145,7 @@ public class Robot extends TimedRobot {
       boolean ReverseIntake = controls.getReverseIntake();
       boolean ejectHatch = controls.getEjectHatch();
 
-
-      //Arm Positions
+      // Arm Positions
 
       // Hatch Scoring
       boolean goHighHatch = controls.getHatchHeights() && controls.getGoToLevelThree();
@@ -196,9 +192,9 @@ public class Robot extends TimedRobot {
 
   public void outputToSmartDashboard() {
     Drive.getInstance().outputTelemetry();
-    //Arm.getInstance().outputTelemetry();
-    //Intake.getInstance().outputTelemetry();
-    //Superstructure.getInstance().outputTelemetry();
+    // Arm.getInstance().outputTelemetry();
+    // Intake.getInstance().outputTelemetry();
+    // Superstructure.getInstance().outputTelemetry();
     enabledLooper.outToSnartDashboard();
   }
 
