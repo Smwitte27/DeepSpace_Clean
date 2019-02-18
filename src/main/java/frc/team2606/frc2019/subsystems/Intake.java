@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team2606.frc2019.Constants;
 import frc.team2606.frc2019.loops.ILooper;
 import frc.team2606.frc2019.loops.Loop;
+import frc.team2606.frc2019.statemachines.IntakeStateMachine;
 import frc.team2606.frc2019.states.IntakeState;
 import frc.team2606.lib.drivers.FactoryMotorController;
 
@@ -18,7 +19,7 @@ public class Intake extends Subsystem {
     private static Intake intakeInstance = new Intake();
     private final Solenoid hatchEject;
     private final TalonSRX intakeMotor;
-
+    private IntakeStateMachine.WantedAction wantedAction = IntakeStateMachine.WantedAction.WANT_MANUAL;
     private IntakeState.MotorState motorState;
     private IntakeState currentState = new IntakeState();
 
@@ -97,6 +98,10 @@ public class Intake extends Subsystem {
 
     public synchronized void releaseBall() {
 
+    }
+
+    public IntakeStateMachine.WantedAction getWantedAction() {
+        return wantedAction;
     }
 
     @Override
