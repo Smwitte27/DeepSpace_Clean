@@ -28,29 +28,40 @@ import frc.team2606.lib.util.DriveSignal;
  * project.
  */
 public class Robot extends TimedRobot {
-  private Looper enabledLooer = new Looper();
+  private Looper enabledLooper = new Looper();
   private Looper disabledLooper = new Looper();
   private Controls controls = new Controls();
 
   private final SubsystemManager subsystemManager = new SubsystemManager(
       Arrays.asList(
-      Drive.getInstance(),
-      Arm.getInstance(),
-      Intake.getInstance(),
-      Superstructure.getInstance()
+      Drive.getInstance()//,
+      //Arm.getInstance(),
+      //Intake.getInstance(),
+      //Superstructure.getInstance()
     )
   );
 
-  private Drive drive = new Drive();
-  private Arm arm = new Arm();
-  private Intake intake = new Intake();
-  private Superstructure superstrucure = new Superstructure();
+  private Drive drive = Drive.getInstance();
+  private Arm arm = Arm.getInstance();
+  //private Intake intake = Intake.getInstance();
+  //private Superstructure superstrucure = Superstructure.getInstance();
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
    */
   @Override
   public void robotInit() {
+    try {
+      CrashTracker.logRobotInit();
+
+
+      subsystemManager.registerEnabledLoops(enabledLooper);
+      subsystemManager.registerDisabledLoops(disabledLooper);
+
+    } catch (Throwable t) {
+      CrashTracker.logThrowableCrash(t);
+      throw t;
+    }
   }
 
   @Override
@@ -98,7 +109,7 @@ public class Robot extends TimedRobot {
       CrashTracker.logTeleopInit();
 
       disabledLooper.stop();
-      enabledLooer.start();
+      enabledLooper.start();
 
       drive.setOpenLoop(new DriveSignal(0.05, 0.05));
 
@@ -112,7 +123,24 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     SmartDashboard.putString("Match Cycle", "TELEOP");
 
+    double lThrottle = controls.getLeftThrottle();
+    double rThrottle = controls.getRightThrottle();
+    double armThrottle = controls.getArmThrottle();
+    //double armDown = OI.getArmDown();
+    //boolean runIntake = OI.isRunIntake();
+    //boolean ejectBall = OI.isEjectBall();
+    SmartDashboard.putNumber("Left Throttle", lThrottle);
+    SmartDashboard.putNumber("Right Throttle", rThrottle);
+    SmartDashboard.putNumber("Arm Throttle", armThrottle);
+    //SmartDashboard.putNumber("Arm Down", armDown);
+    //SmartDashboard.putBoolean("Itake Running", runIntake);
+    //SmartDashboard.putBoolean("Itake Ejecting", ejectBall);   
+
     try {
+
+      drive.setOpenLoop(new DriveSignal(lThrottle, rThrottle));
+
+      arm.setOpenLoop(armThrottle);
 
       // Intake/Eject
       boolean hasBall = false;
@@ -149,7 +177,7 @@ public class Robot extends TimedRobot {
       System.out.println("Starting check systems.");
 
       disabledLooper.stop();
-      enabledLooer.stop();
+      enabledLooper.stop();
 
       // drive.checkSystem();
       // arm.checkSystem();
@@ -168,10 +196,10 @@ public class Robot extends TimedRobot {
 
   public void outputToSmartDashboard() {
     Drive.getInstance().outputTelemetry();
-    Arm.getInstance().outputTelemetry();
-    Intake.getInstance().outputTelemetry();
-    Superstructure.getInstance().outputTelemetry();
-    enabledLooer.outToSnartDashboard();
+    //Arm.getInstance().outputTelemetry();
+    //Intake.getInstance().outputTelemetry();
+    //Superstructure.getInstance().outputTelemetry();
+    enabledLooper.outToSnartDashboard();
   }
 
 }

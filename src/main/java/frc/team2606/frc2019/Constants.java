@@ -30,9 +30,15 @@ public class Constants {
     public static final int CAN_TIMEOUT = 10; // use for on the fly updates
     public static final int LONG_CAN_TIMEOUT = 100; // use for constructors
     public static final double DRIVE_RAMP_RATE = 0;
+
+
+
+    /* ROBOT CONSTRAINTS/LIMITS */
+
+    //Arm
+    public static final int ARM_UPPER_LIMIT = 1000; //in "ticks"
+    public static final int ARM_LOWER_LIMIT = 1000; // in "ticks"
     public static final double ARM_RAMP_RATE = .1;
-
-
 
 
 
@@ -57,4 +63,6 @@ public class Constants {
     public static final double PATH_LOOKAHEAD_TIME = 0.4; // seconds to look ahead along the path for steering
     public static final double PATH_MIN_LOOKAHEAD_DISTANCE = 24.0; // inches
     */
+
+
 }
