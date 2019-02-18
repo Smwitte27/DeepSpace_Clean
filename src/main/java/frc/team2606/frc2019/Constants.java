@@ -14,7 +14,7 @@ public class Constants {
 
     //Superstructure
     public static final int ARM_ACTUATOR = 3;
-    public static final int INTAKE = 4;
+    public static final int INTAKE_MOTOR = 4;
 
     //Solinoids
     public static final int HATCH_EJECT_SOLINOID = 1;
@@ -30,6 +30,7 @@ public class Constants {
     public static final int CAN_TIMEOUT = 10; // use for on the fly updates
     public static final int LONG_CAN_TIMEOUT = 100; // use for constructors
     public static final double DRIVE_RAMP_RATE = 0;
+    public static final int PID_CONTROL = 2;
 
 
 
@@ -39,7 +40,12 @@ public class Constants {
     public static final int ARM_UPPER_LIMIT = 1000; //in "ticks"
     public static final int ARM_LOWER_LIMIT = 1000; // in "ticks"
     public static final double ARM_RAMP_RATE = .1;
+    public static final double ARM_PID_P = 0;
+    public static final double ARM_PID_I = 0;
+    public static final double ARM_PID_D = 0;
 
+    //Intake
+    public static final double INTAKE_CURRENT_THRESHOLD = 5.5;
 
 
 

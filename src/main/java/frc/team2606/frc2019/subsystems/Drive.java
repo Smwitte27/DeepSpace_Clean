@@ -169,11 +169,11 @@ public class Drive extends Subsystem {
     }
 
     public double getLeftEncoderRotations() {
-        return 0;
+        return periodicIO.left_position_ticks / 4096;
     }
 
     public double getRightEncoderRotations() {
-        return 0;
+        return periodicIO.right_position_ticks / 4096;
     }
 
     public double getLeftEncoderDistance() {
@@ -185,11 +185,11 @@ public class Drive extends Subsystem {
     }
 
     public double getLeftVelocicyNativeUnits() {
-        return 0;
+        return periodicIO.left_velocity_ticks_per_100ms;
     }
 
     public double getRightVelocityNativeUnits() {
-        return 0;
+        return periodicIO.right_velocity_ticks_per_100ms;
     }
 
     public double getLeftLinearVelocity() {

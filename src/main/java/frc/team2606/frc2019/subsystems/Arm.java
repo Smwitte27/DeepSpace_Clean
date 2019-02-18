@@ -35,6 +35,7 @@ public class Arm extends Subsystem {
         linearActuator.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 10, 20);
         linearActuator.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 20);
         linearActuator.overrideSoftLimitsEnable(true);
+
         linearActuator.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, Constants.LONG_CAN_TIMEOUT);
         linearActuator.configForwardSoftLimitEnable(true, Constants.LONG_CAN_TIMEOUT);
         linearActuator.configForwardSoftLimitThreshold(Constants.ARM_UPPER_LIMIT, Constants.LONG_CAN_TIMEOUT);
@@ -42,6 +43,13 @@ public class Arm extends Subsystem {
         linearActuator.configReverseSoftLimitThreshold(Constants.ARM_LOWER_LIMIT, Constants.LONG_CAN_TIMEOUT);
         linearActuator.configOpenloopRamp(Constants.ARM_RAMP_RATE, Constants.LONG_CAN_TIMEOUT);
         linearActuator.configClosedloopRamp(Constants.ARM_RAMP_RATE, Constants.LONG_CAN_TIMEOUT);
+       
+        //PID Config
+        linearActuator.config_kP(Constants.PID_CONTROL, Constants.ARM_PID_P, Constants.LONG_CAN_TIMEOUT);
+        linearActuator.config_kI(Constants.PID_CONTROL, Constants.ARM_PID_I, Constants.LONG_CAN_TIMEOUT);
+        linearActuator.config_kD(Constants.PID_CONTROL, Constants.ARM_PID_D, Constants.LONG_CAN_TIMEOUT);
+
+
         linearActuator.selectProfileSlot(0, 0);
 
         linearActuator.set(ControlMode.PercentOutput, 0);
@@ -78,7 +86,7 @@ public class Arm extends Subsystem {
         double POTPosition = height * ticksPerInch;
         if (armControlState != ArmControlState.POSITION_PID) {
             armControlState = ArmControlState.POSITION_PID;
-            linearActuator.selectProfileSlot(2, 0);
+            linearActuator.selectProfileSlot(Constants.PID_CONTROL, 0);
         }
         periodicIO.Actuator_Demand = POTPosition;
     }
