@@ -73,7 +73,7 @@ public class CrashTracker {
 
     //general Crash logger
     public static void logThrowableCrash(Throwable t) {
-        logMarker(t, null);
+        logMarker("Throwable Crash", null);
     }
 
 }

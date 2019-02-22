@@ -19,7 +19,7 @@ public class Arm extends Subsystem {
 
     private static final int ticksPerMotorRotataion = 1000;
     private static final int ticksPerInch = 1000;
-    
+
     private boolean zeroedSensors = false;
 
     private static Arm armInstance = new Arm();
@@ -43,45 +43,40 @@ public class Arm extends Subsystem {
         linearActuator.configReverseSoftLimitThreshold(Constants.ARM_LOWER_LIMIT, Constants.LONG_CAN_TIMEOUT);
         linearActuator.configOpenloopRamp(Constants.ARM_RAMP_RATE, Constants.LONG_CAN_TIMEOUT);
         linearActuator.configClosedloopRamp(Constants.ARM_RAMP_RATE, Constants.LONG_CAN_TIMEOUT);
-       
-        //PID Config
+
+        // PID Config
         linearActuator.config_kP(Constants.PID_CONTROL, Constants.ARM_PID_P, Constants.LONG_CAN_TIMEOUT);
         linearActuator.config_kI(Constants.PID_CONTROL, Constants.ARM_PID_I, Constants.LONG_CAN_TIMEOUT);
         linearActuator.config_kD(Constants.PID_CONTROL, Constants.ARM_PID_D, Constants.LONG_CAN_TIMEOUT);
-
 
         linearActuator.selectProfileSlot(0, 0);
 
         linearActuator.set(ControlMode.PercentOutput, 0);
         setNeutralMode(NeutralMode.Brake);
     }
-    
+
     public static Arm getInstance() {
         return armInstance;
     }
 
+    //Neutral (No) Control
     public void setNeutralMode(NeutralMode neutralMode) {
         linearActuator.setNeutralMode(neutralMode);
     }
 
+    //Open Loop Control
     public void setOpenLoop(double percentage) {
         armControlState = ArmControlState.OPEN_LOOP;
         periodicIO.Actuator_Demand = percentage;
     }
 
+    // Motion Magin Control
     public synchronized void setMotionMagicPosition(double height) {
         double POTPosition = height * ticksPerInch;
         setClosedLoopPOTPosition(POTPosition);
     }
 
-    public void setClosedLoopPOTPosition(double POTPosition) {
-        if (armControlState != ArmControlState.MOTION_MAGIC) {
-            armControlState = ArmControlState.MOTION_MAGIC;
-            linearActuator.selectProfileSlot(0, 0);
-        }
-        periodicIO.Actuator_Demand = POTPosition;
-    }
-
+    // PID Control
     public void setPositionPID(double height) {
         double POTPosition = height * ticksPerInch;
         if (armControlState != ArmControlState.POSITION_PID) {
@@ -91,6 +86,16 @@ public class Arm extends Subsystem {
         periodicIO.Actuator_Demand = POTPosition;
     }
 
+    // Closed Loop Control
+    public void setClosedLoopPOTPosition(double POTPosition) {
+        if (armControlState != ArmControlState.MOTION_MAGIC) {
+            armControlState = ArmControlState.MOTION_MAGIC;
+            linearActuator.selectProfileSlot(0, 0);
+        }
+        periodicIO.Actuator_Demand = POTPosition;
+    }
+
+    //Check for end of Motion Magic Trajectory
     public synchronized boolean hasFinishedTrajectory() {
         return armControlState == ArmControlState.MOTION_MAGIC
                 && Util.epsilonEquals(periodicIO.active_trajectory_position, periodicIO.Actuator_Demand, 5);
@@ -108,7 +113,6 @@ public class Arm extends Subsystem {
     public boolean checkSystem() {
         return false;
     }
-
 
     @Override
     public void stop() {
@@ -168,9 +172,8 @@ public class Arm extends Subsystem {
         SmartDashboard.putBoolean("Arm Has Sent Trajectory", hasFinishedTrajectory());
     }
 
-
     public static class PeriodicIO {
-        //INPUTS
+        // INPUTS
         public int position_ticks;
         public int velocity_ticks_per_100ms;
         public double active_trajectory_accel_g;
@@ -180,13 +183,11 @@ public class Arm extends Subsystem {
         public boolean limit_switch;
         public double feedforward;
 
-        //OUTPUTS
+        // OUTPUTS
         public double Actuator_Demand;
     }
 
     public enum ArmControlState {
-        OPEN_LOOP,
-        MOTION_MAGIC,
-        POSITION_PID
+        OPEN_LOOP, MOTION_MAGIC, POSITION_PID
     }
 }
