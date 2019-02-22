@@ -9,4 +9,12 @@ public class IntakeState {
     public double intakeMotor = 0;
 
     public boolean ballSensorTriggered = false; //current draw sensing
-}
+
+    public void setPower(double power) {
+        intakeMotor = power;
+    }
+
+    public boolean hasBall() {
+        return ballSensorTriggered;
+    }
+ }

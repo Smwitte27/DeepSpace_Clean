@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team2606.frc2019.Constants;
 import frc.team2606.frc2019.loops.ILooper;
@@ -20,6 +21,7 @@ public class Intake extends Subsystem {
     private final Solenoid hatchEject;
     private final TalonSRX intakeMotor;
     private IntakeStateMachine.WantedAction wantedAction = IntakeStateMachine.WantedAction.WANT_MANUAL;
+    private IntakeStateMachine stateMachine = new IntakeStateMachine();
     private IntakeState.MotorState motorState;
     private IntakeState currentState = new IntakeState();
 
@@ -42,13 +44,17 @@ public class Intake extends Subsystem {
 
             @Override
             public void onStart(double timestamp) {
-
+                if (hasBall()) {
+                    wantedAction = IntakeStateMachine.WantedAction.WANT_BALL;
+                } else {
+                    wantedAction = IntakeStateMachine.WantedAction.WANT_MANUAL;
+                }
             }
 
             @Override
             public void onLoop(double timestamp) {
                 synchronized (Intake.this) {
-
+                    IntakeState newState = stateMachine.update(Timer.getFPGATimestamp());
                 }
             }
 
@@ -58,6 +64,11 @@ public class Intake extends Subsystem {
             }
         };
         enabledLooper.register(loop);
+    }
+
+    private IntakeState getState() {
+        currentState.ballSensorTriggered = getBallSensed();
+        return currentState;
     }
 
     public void setMotor(IntakeState.MotorState state) {
