@@ -1,6 +1,7 @@
 package frc.team2606.frc2019.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Solenoid;
@@ -12,6 +13,7 @@ import frc.team2606.frc2019.loops.Loop;
 import frc.team2606.frc2019.statemachines.IntakeStateMachine;
 import frc.team2606.frc2019.states.IntakeState;
 import frc.team2606.lib.drivers.FactoryMotorController;
+import jdk.jfr.Threshold;
 
 public class Intake extends Subsystem {
 
@@ -54,12 +56,14 @@ public class Intake extends Subsystem {
             @Override
             public void onLoop(double timestamp) {
                 synchronized (Intake.this) {
-                    IntakeState newState = stateMachine.update(Timer.getFPGATimestamp());
+                    IntakeState newState = stateMachine.update(Timer.getFPGATimestamp(), wantedAction, getState());
                 }
             }
 
             @Override
             public void onStop(double timestamp) {
+                // kill actions
+                wantedAction = IntakeStateMachine.WantedAction.WANT_MANUAL;
                 stop();
             }
         };
@@ -67,7 +71,7 @@ public class Intake extends Subsystem {
     }
 
     private IntakeState getState() {
-        currentState.ballSensorTriggered = getBallSensed();
+        currentState.ballSensorTriggered = hasBall();
         return currentState;
     }
 
@@ -76,6 +80,17 @@ public class Intake extends Subsystem {
             return;
         }
         motorState = state;
+        switch (motorState) {
+        case RUNNING:
+            intakeMotor.set(ControlMode.PercentOutput, 0);
+        case EJECTING:
+            intakeMotor.set(ControlMode.PercentOutput, -0);
+        case HOLDING:
+            intakeMotor.set(ControlMode.PercentOutput, 0);
+        default:
+            intakeMotor.set(ControlMode.PercentOutput, 0);
+            intakeMotor.setNeutralMode(NeutralMode.Coast);
+        }
     }
 
     public synchronized boolean hasBall() {
